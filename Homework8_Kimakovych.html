@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+    <!-- Создайте страницу которая запрашивает имя пользователя, если пользователь вводит "Admin" либо "admin" он попадает на страницу, 
+      которая оповещает его о том что " Пользоваетль Admin(не статическая строка, а данные что ввел пользователь) вошел в систему" а 
+      рядом разместите кнопку "Выход" которая вернет пользователя к модальному окну ввода логина. Реализуйте код как для куки так и для 
+      localstorage. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+    }
+		#modalWindow {
+      display: none;
+      z-index: 99px;
+      position: absolute;
+      text-align: center;
+      border: 1px solid #708090;
+      background-color: #f0f0f0;
+      top: 40%;
+      left: 40%;
+    }
+    .close {
+      float: right; 
+      padding-right: 5px;
+    }
+    .modal-header h2 {
+      margin-block-start: 0em;
+      margin-block-end: 0.5em;
+    }
+    #registration {
+      height: auto;
+      text-align: center;
+      padding: 10px;
+    }
+    #main-page {
+      display: none;
+    }
+  </style>
+
+</head>
+<body>
+  <div id="main-page">
+    <p>Пользователь <span id="user-name"></span> вошел в систему</p>
+    <input type="button" id="close-main-page" value="exit">
+  </div>
+
+  <div id="modalWindow" class="modal">
+    
+    <div class="modal-header">
+      <h2>Log in</h2>
+    </div>
+    
+    <form id="registration">
+        <input type="text" name='userName' placeholder="Your name">
+        <input type="submit" name="submit" value="Enter">
+    </form>
+
+  </div>
+    
+  <script>
+    var modal = document.getElementById("modalWindow");
+    var closeBtn = document.getElementsByClassName("close");
+    var regForm = document.getElementById('registration');
+    var submitBtn = document.querySelector('[type="submit"]');
+    var mainPage = document.getElementById('main-page');
+    var userName = document.getElementById('user-name');
+    var exitBtn = document.getElementById('close-main-page');
+
+    window.onload = function() {
+      modal.style.display = "block";
+    }
+
+    submitBtn.addEventListener('click', formValidationBeforeSubmit);
+
+    function formValidationBeforeSubmit(e) {
+      if(regForm.elements[0].value === "" || regForm.elements[0].value.toLowerCase() != "admin") {
+        alert ("Name incorrect");
+        e.preventDefault();
+       } else if(!window.localStorage.getItem(regForm.elements[0].value.toLowerCase())) {
+          window.localStorage[regForm.elements[0].value.toLowerCase()] = JSON.stringify(regForm.elements[0].value);
+          
+          alert ('hello, ' + regForm.elements[0].value);
+          
+          modal.style.display = "none";
+          mainPage.style.display = "block";
+          
+          userName.innerHTML = regForm.elements[0].value;          
+          e.preventDefault();
+        } else {
+          alert ("Admin is already login");
+          e.preventDefault();
+        };
+      }
+
+      exitBtn.addEventListener('click', exitPage);
+      function exitPage () {
+        modal.style.display = "block";
+        mainPage.style.display = "none";
+        window.localStorage.removeItem(regForm.elements[0].value.toLowerCase());
+      }
+
+  </script>   
+</body>
+</html>
